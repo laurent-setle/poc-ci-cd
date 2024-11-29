@@ -13,4 +13,4 @@ jobs:
     environment: ${{ inputs.environment }}
     steps:
       - name: Notify Slack
-        uses: echo "Notify Slack for ${{ inputs.environment }} changelog"
+        run: echo "Notify Slack for ${{ inputs.environment }} changelog"
