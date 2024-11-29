@@ -1,0 +1,68 @@
+name: Pull Request Workflow
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened # Trigger only on PR events
+
+jobs:
+  # Job 1: Build and verify the code
+  build-and-verify:
+    runs-on: ubuntu-latest
+    if: "! startsWith(github.head_ref, 'hotfix/')" # Exclude branches starting with 'hotfix/'
+    steps:
+      # Checkout the code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      # Install dependencies using Yarn
+      - name: Install dependencies
+        run: yarn install
+
+      # Lint and verify the code
+      - name: Lint and verify
+        run: yarn lint && yarn test
+
+      # Build the application
+      - name: Build application
+        run: yarn build
+
+  # Job 2: Build and push container image using Podman
+  podman-build-and-push:
+    runs-on: ubuntu-latest
+    needs: build-and-verify # Depends on the first job
+    if: "! startsWith(github.head_ref, 'hotfix/')" # Exclude branches starting with 'hotfix/'
+    steps:
+      # Checkout the code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Install Podman
+      - name: Install Podman
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y podman
+
+      # Log in to DigitalOcean Container Registry
+      - name: Log in to DigitalOcean Container Registry
+        run: echo "${{ secrets.DIGITALOCEAN_REGISTRY_ACCESS_TOKEN }}" | podman login -u "docker" --password-stdin registry.digitalocean.com
+
+      # Build the Podman image
+      - name: Build Podman image
+        run: |
+          podman build -t registry.digitalocean.com/setle/poc-ci-cd:${{ github.sha }} .
+          podman tag registry.digitalocean.com/setle/poc-ci-cd:${{ github.sha }} registry.digitalocean.com/setle/poc-ci-cd:latest
+
+      # Push the Podman image
+      - name: Push Podman image
+        run: |
+          podman push registry.digitalocean.com/setle/poc-ci-cd:${{ github.sha }}
+          podman push registry.digitalocean.com/setle/poc-ci-cd:latest
