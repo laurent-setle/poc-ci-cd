@@ -89,4 +89,7 @@ jobs:
       - name: Verify Fast-Forward Merge
         run: |
           # Attempt a fast-forward dry-run merge
+          echo "git merge-base --is-ancestor origin/${{ github.base_ref }} ${{ github.head_ref }}"
+          git merge-base --is-ancestor origin/${{ github.base_ref }} ${{ github.head_ref }}
+          echo "git merge --ff-only origin/${{ github.base_ref }}"
           git merge --ff-only origin/${{ github.base_ref }}
