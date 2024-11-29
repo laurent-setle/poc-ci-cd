@@ -10,11 +10,13 @@ on:
 jobs:
   # Job 1: Build and verify the code
   build-and-test-code:
+    name: Build & test application
     uses: ./.github/workflows/job_build_and_test_code.yml
     if: "! startsWith(github.head_ref, 'hotfix/')" # Exclude branches starting with 'hotfix/'
 
   # Job 2: Build and push container image using Podman
   build-container:
+    name: Build container
     uses: ./.github/workflows/job_build_and_push_container.yml
     needs: build-and-test-code # Depends on the first job
     if: "! startsWith(github.head_ref, 'hotfix/')" # Exclude branches starting with 'hotfix/'
