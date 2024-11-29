@@ -15,7 +15,7 @@ jobs:
     secrets: inherit
 
   generate-development-changelog:
-    needs: build-and-test-code
+    needs: build-and-push-container
     uses: ./.github/workflows/job_generate_changelog.yml
     with:
       environment: development
