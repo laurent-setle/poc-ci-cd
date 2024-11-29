@@ -53,7 +53,7 @@ jobs:
 
       # Log in to DigitalOcean Container Registry
       - name: Log in to DigitalOcean Container Registry
-        run: echo "${{ secrets.DIGITALOCEAN_REGISTRY_ACCESS_TOKEN }}" | podman login -u "${{secrets.DIGITALOCEAN_REGISTRY_USER}}" --password-stdin registry.digitalocean.com
+        run: echo "${{ secrets.DIGITALOCEAN_REGISTRY_PASSWORD }}" | podman login -u "${{secrets.DIGITALOCEAN_REGISTRY_USER}}" --password-stdin registry.digitalocean.com
 
       # Build the Podman image
       - name: Build Podman image
