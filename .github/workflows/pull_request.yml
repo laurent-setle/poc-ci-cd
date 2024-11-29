@@ -67,9 +67,24 @@ jobs:
           podman push registry.digitalocean.com/setle/poc-ci-cd:${{ github.sha }}
           podman push registry.digitalocean.com/setle/poc-ci-cd:latest
 
-  pr-verification:
+  verify-fast-forward:
     runs-on: ubuntu-latest
-    needs: podman-build-and-push
+    if: "! startsWith(github.head_ref, 'hotfix/')" # Exclude branches starting with 'hotfix/'
+
     steps:
-      - name: Check
-        run: echo ok
+      # Check out the pull request's source and target branches
+      - name: Check out the repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+
+      # Fetch the target branch to test the fast-forward merge
+      - name: Fetch the target branch
+        run: |
+          git fetch origin ${{ github.base_ref }}
+
+      # Verify if fast-forward is possible
+      - name: Verify Fast-Forward Merge
+        run: |
+          # Attempt a fast-forward dry-run merge
+          git merge --ff-only origin/${{ github.base_ref }}
