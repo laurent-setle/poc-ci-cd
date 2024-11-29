@@ -5,7 +5,7 @@ on:
     types:
       - opened
       - synchronize
-      - reopened # Trigger only on PR events
+      - edited # Trigger only on PR events
 
 jobs:
   # Job 1: Build and verify the code
