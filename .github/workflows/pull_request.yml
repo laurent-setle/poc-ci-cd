@@ -81,6 +81,8 @@ jobs:
       # Fetch the target branch to test the fast-forward merge
       - name: Fetch the target branch
         run: |
+          echo "Base ref: ${{ github.base_ref }}"
+          echo "Head ref: ${{ github.head_ref }}"
           git fetch origin ${{ github.base_ref }}
 
       # Verify if fast-forward is possible
