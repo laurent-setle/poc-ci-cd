@@ -1,0 +1,16 @@
+name: Generate Changelog
+
+on:
+  workflow_call: # Makes this workflow reusable
+    inputs:
+      environment:
+        type: string
+        required: true
+
+jobs:
+  generate-changelog:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Notify Slack
+        uses: echo "Notify Slack for ${{ inputs.environment }} changelog"

@@ -1,0 +1,35 @@
+name: Deploy Environment
+
+on:
+  workflow_call: # Makes this workflow reusable
+    inputs:
+      environment:
+        type: string
+        required: true
+      image:
+        type: string
+        required: false
+        default: $GITHUB_REPOSITORY
+      registry:
+        type: string
+        required: false
+        default: registry.digitalocean.com
+
+jobs:
+  deploy-environment:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Log in to Container Registry
+        run: echo "${{ secrets.DIGITALOCEAN_REGISTRY_PASSWORD }}" | podman login -u "${{secrets.DIGITALOCEAN_REGISTRY_USER}}" --password-stdin ${{ inputs.registry }}
+
+      - name: Tag Podman image
+        run: |
+          podman pull ${{ inputs.registry }}/${{ inputs.image }}:$GITHUB_SHA
+          podman tag ${{ inputs.registry }}/${{ inputs.image }}:$GITHUB_SHA ${{ inputs.registry }}/${{ inputs.image }}:${{ inputs.environment }}
+
+      - name: Push Podman image
+        run: podman push ${{ inputs.registry }}/${{ inputs.image }}:${{ inputs.environment }}

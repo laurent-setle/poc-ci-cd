@@ -1,0 +1,56 @@
+name: Deployment Pipeline
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build-and-test-code:
+    uses: ./.github/workflows/jobs/build_and_test_code.yml
+
+  build-and-push-container:
+    needs: build-and-test-code
+    uses: ./.github/workflows/jobs/build_and_push_container.yml
+    secrets: inherit
+
+  generate-development-changelog:
+    needs: build-and-test-code
+    uses: ./.github/workflows/jobs/generate_changelog.yml
+    with:
+      environment: development
+    secrets: inherit
+
+  deploy-to-development:
+    needs: generate-development-changelog
+    uses: ./.github/workflows/jobs/deploy_environment.yml
+    with:
+      environment: development
+    secrets: inherit
+
+  generate-staging-changelog:
+    needs: deploy-to-development
+    uses: ./.github/workflows/jobs/generate_changelog.yml
+    with:
+      environment: staging
+    secrets: inherit
+
+  deploy-to-staging:
+    needs: generate-staging-changelog
+    uses: ./.github/workflows/jobs/deploy_environment.yml
+    with:
+      environment: staging
+    secrets: inherit
+
+  generate-production-changelog:
+    needs: deploy-to-staging
+    uses: ./.github/workflows/jobs/generate_changelog.yml
+    with:
+      environment: production
+    secrets: inherit
+
+  deploy-to-production:
+    needs: generate-production-changelog
+    uses: ./.github/workflows/jobs/deploy_environment.yml
+    with:
+      environment: production
+    secrets: inherit
