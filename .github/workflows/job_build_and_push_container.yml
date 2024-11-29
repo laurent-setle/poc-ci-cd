@@ -25,13 +25,19 @@ jobs:
 
       - name: Log in to Container Registry
         if: inputs.push
-        run: echo "${{ secrets.DIGITALOCEAN_REGISTRY_PASSWORD }}" | podman login -u "${{secrets.DIGITALOCEAN_REGISTRY_USER}}" --password-stdin ${{ inputs.registry }}
+        run: |
+          echo "echo \"${{ secrets.DIGITALOCEAN_REGISTRY_PASSWORD }}\" | podman login -u \"${{secrets.DIGITALOCEAN_REGISTRY_USER}}\" --password-stdin ${{ inputs.registry }}"
+          echo "${{ secrets.DIGITALOCEAN_REGISTRY_PASSWORD }}" | podman login -u "${{secrets.DIGITALOCEAN_REGISTRY_USER}}" --password-stdin ${{ inputs.registry }}
 
       # Build the Podman image
       - name: Build Podman image
-        run: podman build -t ${{ inputs.registry }}/${{ inputs.image }}:$GITHUB_SHA .
+        run: |
+          echo "podman build -t ${{ inputs.registry }}/${{ inputs.image }}:$GITHUB_SHA ."
+          podman build -t ${{ inputs.registry }}/${{ inputs.image }}:$GITHUB_SHA .
 
       # Push the Podman image
       - name: Push Podman image
         if: inputs.push
-        run: podman push ${{ inputs.registry }}/${{ inputs.image }}:$GITHUB_SHA
+        run: |
+          echo "podman push ${{ inputs.registry }}/${{ inputs.image }}:$GITHUB_SHA"
+          podman push ${{ inputs.registry }}/${{ inputs.image }}:$GITHUB_SHA
