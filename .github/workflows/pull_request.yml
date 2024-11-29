@@ -66,3 +66,8 @@ jobs:
         run: |
           podman push registry.digitalocean.com/setle/poc-ci-cd:${{ github.sha }}
           podman push registry.digitalocean.com/setle/poc-ci-cd:latest
+
+    pr-verification:
+      needs: podman-build-and-push
+      steps:
+        - ok: echo ok
