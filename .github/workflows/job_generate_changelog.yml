@@ -8,7 +8,7 @@ on:
         required: true
 
 jobs:
-  generate-changelog:
+  changelog:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:

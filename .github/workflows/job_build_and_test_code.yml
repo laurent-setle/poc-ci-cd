@@ -4,7 +4,7 @@ on:
   workflow_call: # Makes this workflow reusable
 
 jobs:
-  build-and-test-code:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

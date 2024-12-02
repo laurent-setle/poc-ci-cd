@@ -16,7 +16,7 @@ on:
         default: registry.digitalocean.com
 
 jobs:
-  deploy-environment:
+  deploy:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:

@@ -6,7 +6,7 @@ on:
       image:
         type: string
         required: false
-        default: $GITHUB_REPOSITORY
+        default: setle/$GITHUB_REPOSITORY
       registry:
         type: string
         required: false
@@ -17,7 +17,7 @@ on:
         default: true
 
 jobs:
-  build-and-push-container:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
