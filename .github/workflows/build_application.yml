@@ -66,6 +66,11 @@ jobs:
         with:
           name: build-artifacts
 
+      - name: Logging
+        run: |
+          pwd
+          ls -al
+
       - name: Log in to Container Registry
         if: inputs.push
         run: echo "${{ secrets.DIGITALOCEAN_REGISTRY_PASSWORD }}" | podman login -u "${{secrets.DIGITALOCEAN_REGISTRY_USER}}" --password-stdin ${{ inputs.registry }}
