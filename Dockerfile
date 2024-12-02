@@ -17,4 +17,4 @@ COPY .env.vault .
 EXPOSE 3000
 
 # Start the application
-CMD ["node", "dist/main"]
+CMD ["node", "-r", "dotenv/config", "dist/main"]
