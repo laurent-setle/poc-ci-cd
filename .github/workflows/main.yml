@@ -8,17 +8,32 @@ on:
 jobs:
   build-and-test-code:
     name: Build & test application
-    runs-on: ubuntu-latest
-    steps:
-      - name: Build & Test Code
-        uses: ./.github/workflows/action_build_and_test_code.yml
+    uses: ./.github/workflows/job_build_and_test_code.yml
 
   build-and-push-container:
     name: Build & push container
+    needs: build-and-test-code
     runs-on: ubuntu-latest
     steps:
-      - name: Build Container
-        uses: ./.github/workflows/action_build_and_push_container.yml
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Log in to Container Registry
+        run: echo "${{ secrets.DIGITALOCEAN_REGISTRY_PASSWORD }}" | docker login -u "${{secrets.DIGITALOCEAN_REGISTRY_USER}}" --password-stdin registry.digitalocean.com
+
+      # Build the Docker image
+      - name: Build Docker image
+        run: docker build -t registry.digitalocean.com/$GITHUB_REPOSITORY:$GITHUB_SHA .
+
+      # Push the Docker image
+      - name: Push Docker image
+        run: docker push registry.digitalocean.com/$GITHUB_REPOSITORY:$GITHUB_SHA
+
+#  build-and-push-container:
+#    name: Build & push container
+#    needs: build-and-test-code
+#    uses: ./.github/workflows/job_build_and_push_container.yml
+#    secrets: inherit
 
   generate-development-changelog:
     name: Generate development changelog
