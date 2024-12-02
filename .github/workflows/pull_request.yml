@@ -10,7 +10,7 @@ on:
 jobs:
   build-container:
     name: Build application
-    uses: build_application.yml
+    uses: ./.github/workflows/build_application.yml
     if: "! startsWith(github.head_ref, 'hotfix/')" # Exclude branches starting with 'hotfix/'
     secrets: inherit
     with:
