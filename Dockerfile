@@ -1,9 +1,6 @@
 # Use the official Node.js 18 base image
 FROM node:18-alpine
 
-# Install dotenvx
-RUN curl -sfS https://dotenvx.sh/install.sh | sh
-
 # Set the working directory inside the container
 WORKDIR /usr/src/app
 
@@ -20,4 +17,4 @@ COPY .env* .
 EXPOSE 3000
 
 # Start the application
-CMD ["dotenvx", "run", "--", "node", "dist/main"]
+CMD ["node_modules/@dotenvx/dotenvx/src/cli/dotenvx.js", "run", "--", "node", "dist/main"]
