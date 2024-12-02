@@ -41,8 +41,8 @@ jobs:
       - name: E2E test
         run: yarn test:e2e
 
-      - name: Cleanup dev dependencies
-        run: yarn install --production
+#      - name: Cleanup dev dependencies
+#        run: yarn install --production
 
       - name: Archive build
         uses: actions/upload-artifact@v4
