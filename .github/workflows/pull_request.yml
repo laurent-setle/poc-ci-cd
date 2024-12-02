@@ -13,3 +13,5 @@ jobs:
     uses: ./.github/workflows/job_build_and_push_container.yml
     if: "! startsWith(github.head_ref, 'hotfix/')" # Exclude branches starting with 'hotfix/'
     secrets: inherit
+    with:
+      push: false
