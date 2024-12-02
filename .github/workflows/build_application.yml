@@ -48,6 +48,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
+          include-hidden-files: true
           path: |
             node_modules/
             dist/
@@ -64,11 +65,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-artifacts
-
-      - name: Logging
-        run: |
-          pwd
-          ls -al
 
       - name: Log in to Container Registry
         if: inputs.push
