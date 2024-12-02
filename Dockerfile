@@ -4,9 +4,6 @@ FROM node:18-alpine
 # Set the working directory inside the container
 WORKDIR /usr/src/app
 
-# Install dotenvx
-RUN curl -sfS https://dotenvx.sh/install.sh | sh
-
 # Copy dependencies
 COPY node_modules/ node_modules/
 
@@ -20,4 +17,4 @@ COPY .env* .
 EXPOSE 3000
 
 # Start the application
-CMD ["dotenvx", "run", "--", "node", "dist/main"]
+CMD ["node_modules/.bin/dotenvx", "run", "--", "node", "dist/main"]
