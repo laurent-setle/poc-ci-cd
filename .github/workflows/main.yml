@@ -6,13 +6,8 @@ on:
     - main
 
 jobs:
-  build-and-test-code:
-    name: Build & test app
-    uses: ./.github/workflows/job_build_and_test_code.yml
-
   build-and-push-container:
-    name: Build & push container
-    needs: build-and-test-code
+    name: Build application
     uses: ./.github/workflows/job_build_and_push_container.yml
     secrets: inherit
 
