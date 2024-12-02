@@ -18,14 +18,13 @@ on:
 jobs:
   changelog:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
+    environment: ${{ inputs.environment }} # only add environment on first job of deployment to avoid asking for approval on every job
     steps:
       - name: Notify Slack
         run: echo "Notify Slack for ${{ inputs.environment }} changelog"
 
   deploy:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
     needs: changelog
     steps:
       - name: Checkout code
