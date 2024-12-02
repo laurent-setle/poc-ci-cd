@@ -1,0 +1,34 @@
+name: Build and Push Container
+
+inputs:
+  image:
+    type: string
+    required: false
+    default: setle/$GITHUB_REPOSITORY
+  registry:
+    type: string
+    required: false
+    default: registry.digitalocean.com
+  push:
+    type: boolean
+    required: false
+    default: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Log in to Container Registry
+      if: inputs.push
+      run: echo "${{ secrets.DIGITALOCEAN_REGISTRY_PASSWORD }}" | podman login -u "${{secrets.DIGITALOCEAN_REGISTRY_USER}}" --password-stdin ${{ inputs.registry }}
+
+    # Build the Podman image
+    - name: Build Podman image
+      run: podman build -t ${{ inputs.registry }}/${{ inputs.image }}:$GITHUB_SHA .
+
+    # Push the Podman image
+    - name: Push Podman image
+      if: inputs.push
+      run: podman push ${{ inputs.registry }}/${{ inputs.image }}:$GITHUB_SHA
