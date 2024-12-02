@@ -9,16 +9,24 @@ on:
       image:
         type: string
         required: false
-        default: $GITHUB_REPOSITORY
+        default: setle/$GITHUB_REPOSITORY
       registry:
         type: string
         required: false
         default: registry.digitalocean.com
 
 jobs:
+  changelog:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Notify Slack
+        run: echo "Notify Slack for ${{ inputs.environment }} changelog"
+
   deploy:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
+    needs: changelog
     steps:
       - name: Checkout code
         uses: actions/checkout@v3

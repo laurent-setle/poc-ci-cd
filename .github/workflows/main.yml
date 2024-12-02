@@ -8,53 +8,29 @@ on:
 jobs:
   build-and-push-container:
     name: Build application
-    uses: ./.github/workflows/job_build_and_push_container.yml
+    uses: ./.github/workflows/build_application.yml
     secrets: inherit
 
-  generate-development-changelog:
-    name: Changelog development
-    needs: build-and-push-container
-    uses: ./.github/workflows/job_generate_changelog.yml
-    with:
-      environment: development
-    secrets: inherit
-
-  deploy-to-development:
+  deploy-development:
     name: Deploy development
-    needs: generate-development-changelog
-    uses: ./.github/workflows/job_deploy_environment.yml
+    needs: build-and-push-container
+    uses: ./.github/workflows/deploy_application.yml
     with:
       environment: development
     secrets: inherit
 
-  generate-staging-changelog:
-    name: Changelog staging
-    needs: deploy-to-development
-    uses: ./.github/workflows/job_generate_changelog.yml
-    with:
-      environment: staging
-    secrets: inherit
-
-  deploy-to-staging:
+  deploy-staging:
     name: Deploy staging
-    needs: generate-staging-changelog
-    uses: ./.github/workflows/job_deploy_environment.yml
+    needs: deploy-development
+    uses: ./.github/workflows/deploy_application.yml
     with:
       environment: staging
     secrets: inherit
 
-  generate-production-changelog:
-    name: Changelog production
-    needs: deploy-to-staging
-    uses: ./.github/workflows/job_generate_changelog.yml
-    with:
-      environment: production
-    secrets: inherit
-
-  deploy-to-production:
+  deploy-production:
     name: Deploy production
-    needs: generate-production-changelog
-    uses: ./.github/workflows/job_deploy_environment.yml
+    needs: deploy-staging
+    uses: ./.github/workflows/deploy_application.yml
     with:
       environment: production
     secrets: inherit
