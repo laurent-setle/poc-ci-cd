@@ -6,7 +6,7 @@ on:
       image:
         type: string
         required: false
-        default: $GITHUB_REPOSITORY
+        default: setle/$GITHUB_REPOSITORY
       registry:
         type: string
         required: false
@@ -17,8 +17,31 @@ on:
         default: true
 
 jobs:
-  build-and-push-container:
+  build-code:
+    name: Build & test code
     runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Lint and verify
+        run: yarn lint && yarn test
+
+      - name: Build application
+        run: yarn build
+
+  build-container:
+    name: Build container
+    runs-on: ubuntu-latest
+    needs: build-code
     steps:
       - name: Checkout code
         uses: actions/checkout@v3

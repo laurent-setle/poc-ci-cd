@@ -6,79 +6,31 @@ on:
     - main
 
 jobs:
-  build-and-test-code:
-    name: Build & test application
-    uses: ./.github/workflows/job_build_and_test_code.yml
-
   build-and-push-container:
-    name: Build & push container
-    needs: build-and-test-code
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Log in to Container Registry
-        run: echo "${{ secrets.DIGITALOCEAN_REGISTRY_PASSWORD }}" | docker login -u "${{secrets.DIGITALOCEAN_REGISTRY_USER}}" --password-stdin registry.digitalocean.com
-
-      # Build the Docker image
-      - name: Build Docker image
-        run: docker build -t registry.digitalocean.com/$GITHUB_REPOSITORY:$GITHUB_SHA .
-
-      # Push the Docker image
-      - name: Push Docker image
-        run: docker push registry.digitalocean.com/$GITHUB_REPOSITORY:$GITHUB_SHA
-
-#  build-and-push-container:
-#    name: Build & push container
-#    needs: build-and-test-code
-#    uses: ./.github/workflows/job_build_and_push_container.yml
-#    secrets: inherit
-
-  generate-development-changelog:
-    name: Generate development changelog
-    needs: build-and-push-container
-    uses: ./.github/workflows/job_generate_changelog.yml
-    with:
-      environment: development
+    name: Build application
+    uses: ./.github/workflows/build_application.yml
     secrets: inherit
 
-  deploy-to-development:
+  deploy-development:
     name: Deploy development
-    needs: generate-development-changelog
-    uses: ./.github/workflows/job_deploy_environment.yml
+    needs: build-and-push-container
+    uses: ./.github/workflows/deploy_application.yml
     with:
       environment: development
     secrets: inherit
 
-  generate-staging-changelog:
-    name: Generate staging changelog
-    needs: deploy-to-development
-    uses: ./.github/workflows/job_generate_changelog.yml
-    with:
-      environment: staging
-    secrets: inherit
-
-  deploy-to-staging:
+  deploy-staging:
     name: Deploy staging
-    needs: generate-staging-changelog
-    uses: ./.github/workflows/job_deploy_environment.yml
+    needs: deploy-development
+    uses: ./.github/workflows/deploy_application.yml
     with:
       environment: staging
     secrets: inherit
 
-  generate-production-changelog:
-    name: Generate production changelog
-    needs: deploy-to-staging
-    uses: ./.github/workflows/job_generate_changelog.yml
-    with:
-      environment: production
-    secrets: inherit
-
-  deploy-to-production:
+  deploy-production:
     name: Deploy production
-    needs: generate-production-changelog
-    uses: ./.github/workflows/job_deploy_environment.yml
+    needs: deploy-staging
+    uses: ./.github/workflows/deploy_application.yml
     with:
       environment: production
     secrets: inherit
