@@ -13,6 +13,8 @@ COPY dist/ dist
 # Copy env configuration
 COPY .env* .
 
+RUN ls -al
+
 # Expose the port the app runs on
 EXPOSE 3000
 
