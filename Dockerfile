@@ -4,6 +4,9 @@ FROM node:18-alpine
 # Set the working directory inside the container
 WORKDIR /usr/src/app
 
+# Install dotenvx
+RUN curl -sfS https://dotenvx.sh/install.sh | sh
+
 # Copy dependencies
 COPY node_modules/ node_modules/
 
@@ -11,10 +14,10 @@ COPY node_modules/ node_modules/
 COPY dist/ dist/
 
 # Copy env configuration
-COPY .env.vault .
+COPY .env* .
 
 # Expose the port the app runs on
 EXPOSE 3000
 
 # Start the application
-CMD ["node", "-r", "dotenv/config", "dist/main"]
+CMD ["dotenvx", "run", "--", "node", "dist/main"]
