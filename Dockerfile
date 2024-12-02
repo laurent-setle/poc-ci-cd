@@ -5,10 +5,10 @@ FROM node:18-alpine
 WORKDIR /usr/src/app
 
 # Copy dependencies
-COPY node_modules .
+COPY node_modules/ node_modules/
 
 # Copy built code
-COPY dist .
+COPY dist/ dist/
 
 # Copy env configuration
 COPY .env.vault .
