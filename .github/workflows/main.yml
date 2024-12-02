@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-and-test-code:
-    name: Build & test application
+    name: Build & test app
     uses: ./.github/workflows/job_build_and_test_code.yml
 
   build-and-push-container:
