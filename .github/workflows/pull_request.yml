@@ -15,3 +15,15 @@ jobs:
     secrets: inherit
     with:
       push: false
+
+  verify-changelog:
+    name: Verify changelog
+    runs-on: ubuntu-latest
+    container:
+      image: registry.digitalocean.com/setle/setlebe/setle-changelog:1a968702d8a7f0d9a10896258f683909f8cd0b03
+      credentials:
+        username: ${{ secrets.DIGITALOCEAN_REGISTRY_USER }}
+        password: ${{ secrets.DIGITALOCEAN_REGISTRY_PASSWORD }}
+    steps:
+      - name: Verify commits for changelog entries
+        run: java -jar changelog.jar verify-changelog --application=$GITHUB_REPOSITORY --github-token=$GITHUB_TOKEN --github-repository=$GITHUB_REPOSITORY --slack-token=${{ secrets.SLACK_TOKEN }} --slack-channel=poc-ci-cd
