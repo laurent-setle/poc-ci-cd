@@ -22,10 +22,12 @@ jobs:
     permissions:
       contents: read
     container:
-      image: registry.digitalocean.com/setle/setlebe/setle-changelog:1a968702d8a7f0d9a10896258f683909f8cd0b03
+      image: registry.digitalocean.com/setle/setlebe/setle-changelog:7a51b432ed2dca32866df4df7c670a4409a7d771
       credentials:
         username: ${{ secrets.DIGITALOCEAN_REGISTRY_USER }}
         password: ${{ secrets.DIGITALOCEAN_REGISTRY_PASSWORD }}
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
       - name: Verify commits for changelog entries
-        run: java -jar /usr/src/app/changelog.jar verify-changelog --application=$GITHUB_REPOSITORY --github-token=${{ secrets.GITHUB_TOKEN }} --github-repository=$GITHUB_REPOSITORY
+        run: java -jar changelog.jar verify-changelog --application=$GITHUB_REPOSITORY --github-token=${{ secrets.GITHUB_TOKEN }} --github-repository=$GITHUB_REPOSITORY
