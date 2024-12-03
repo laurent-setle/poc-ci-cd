@@ -19,7 +19,7 @@ jobs:
   changelog:
     runs-on: ubuntu-latest
     container:
-      image: registry.digitalocean.com/setle/setlebe/setle-changelog:7a51b432ed2dca32866df4df7c670a4409a7d771
+      image: registry.digitalocean.com/setle/setlebe/setle-changelog:62f9d6b4636df57db3747a31db24d1f134b8abb4
       credentials:
         username: ${{ secrets.DIGITALOCEAN_REGISTRY_USER }}
         password: ${{ secrets.DIGITALOCEAN_REGISTRY_PASSWORD }}
