@@ -30,6 +30,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          fetch-depth: '150'
+          fetch-depth: '150' # necessary to find changelog entries in commits, or else it will only look at the last commit
       - name: Verify commits for changelog entries
         run: java -jar /changelog.jar verify-changelog --application=$GITHUB_REPOSITORY --github-token=${{ secrets.GITHUB_TOKEN }} --github-repository=$GITHUB_REPOSITORY --current-commit=${{github.event.pull_request.head.sha}}
