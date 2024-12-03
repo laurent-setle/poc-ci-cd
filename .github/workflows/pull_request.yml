@@ -29,5 +29,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      - name: Logging
+        run: |
+          ls -al
+          ls -al $GITHUB_WORKSPACE
       - name: Verify commits for changelog entries
-        run: java -jar /changelog.jar verify-changelog --application=$GITHUB_REPOSITORY --repository=$GITHUB_WORKSPACE --github-token=${{ secrets.GITHUB_TOKEN }} --github-repository=$GITHUB_REPOSITORY
+        run: java -Dlogging.level.app.setle=DEBUG -jar /changelog.jar verify-changelog --application=$GITHUB_REPOSITORY --repository=$GITHUB_WORKSPACE --github-token=${{ secrets.GITHUB_TOKEN }} --github-repository=$GITHUB_REPOSITORY
