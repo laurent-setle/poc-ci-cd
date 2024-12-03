@@ -5,6 +5,9 @@ on:
     branches:
     - main
 
+permissions:
+  deployments: read
+
 jobs:
   build-and-push-container:
     name: Build application

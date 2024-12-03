@@ -7,6 +7,9 @@ on:
       - synchronize
       - reopened # Trigger only on PR events
 
+permissions:
+  contents: read
+
 jobs:
   build-container:
     name: Build application
