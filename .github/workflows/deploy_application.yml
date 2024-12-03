@@ -29,6 +29,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: '250' # necessary to find changelog entries in commits, or else it will only look at the last commit
       - name: Notify Slack
         run: java -jar /changelog.jar release --application=$GITHUB_REPOSITORY --environment=${{ inputs.environment }} --repository=$GITHUB_WORKSPACE --github-token=${{ secrets.GITHUB_TOKEN }} --before-deploy=true --github-repository=$GITHUB_REPOSITORY --slack-token=${{ secrets.SLACK_TOKEN }} --slack-channel=poc-ci-cd
   deploy:
