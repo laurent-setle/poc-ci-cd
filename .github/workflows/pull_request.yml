@@ -15,3 +15,21 @@ jobs:
     secrets: inherit
     with:
       push: false
+
+  verify-changelog:
+    name: Verify changelog
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    container:
+      image: registry.digitalocean.com/setle/setlebe/setle-changelog:9d317c95e6eea332a6532dcac84f492ad3c1abea
+      credentials:
+        username: ${{ secrets.DIGITALOCEAN_REGISTRY_USER }}
+        password: ${{ secrets.DIGITALOCEAN_REGISTRY_PASSWORD }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: '150'
+      - name: Verify commits for changelog entries
+        run: java -jar /changelog.jar verify-changelog --application=$GITHUB_REPOSITORY --github-token=${{ secrets.GITHUB_TOKEN }} --github-repository=$GITHUB_REPOSITORY --current-commit=${{github.event.pull_request.head.sha}}

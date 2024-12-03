@@ -18,11 +18,19 @@ on:
 jobs:
   changelog:
     runs-on: ubuntu-latest
+    container:
+      image: registry.digitalocean.com/setle/setlebe/setle-changelog:9d317c95e6eea332a6532dcac84f492ad3c1abea
+      credentials:
+        username: ${{ secrets.DIGITALOCEAN_REGISTRY_USER }}
+        password: ${{ secrets.DIGITALOCEAN_REGISTRY_PASSWORD }}
     environment: ${{ inputs.environment }} # only add environment on first job of deployment to avoid asking for approval on every job
+    permissions:
+      deployments: read
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
       - name: Notify Slack
-        run: echo "Notify Slack for ${{ inputs.environment }} changelog"
-
+        run: java -jar /changelog.jar release --application=$GITHUB_REPOSITORY --environment=${{ inputs.environment }} --repository=$GITHUB_WORKSPACE --github-token=${{ secrets.GITHUB_TOKEN }} --before-deploy=true --github-repository=$GITHUB_REPOSITORY --slack-token=${{ secrets.SLACK_TOKEN }} --slack-channel=poc-ci-cd
   deploy:
     runs-on: ubuntu-latest
     needs: changelog
