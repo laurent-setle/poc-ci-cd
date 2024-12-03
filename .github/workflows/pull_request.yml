@@ -26,4 +26,4 @@ jobs:
         password: ${{ secrets.DIGITALOCEAN_REGISTRY_PASSWORD }}
     steps:
       - name: Verify commits for changelog entries
-        run: java -jar changelog.jar verify-changelog --application=$GITHUB_REPOSITORY --github-token=$GITHUB_TOKEN --github-repository=$GITHUB_REPOSITORY --slack-token=${{ secrets.SLACK_TOKEN }} --slack-channel=poc-ci-cd
+        run: java -jar /usr/src/app/changelog.jar verify-changelog --application=$GITHUB_REPOSITORY --github-token=$GITHUB_TOKEN --github-repository=$GITHUB_REPOSITORY --slack-token=${{ secrets.SLACK_TOKEN }} --slack-channel=poc-ci-cd
