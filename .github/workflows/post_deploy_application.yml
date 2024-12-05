@@ -1,0 +1,55 @@
+name: Deploy Environment
+
+on:
+  workflow_call: # Makes this workflow reusable
+    inputs:
+      environment:
+        type: string
+        required: true
+      environment_next:
+        type: string
+        required: false
+      persist:
+        type: boolean
+        required: false
+        default: false
+      persist_next:
+        type: boolean
+        required: false
+        default: false
+      image:
+        type: string
+        required: false
+        default: setle/$GITHUB_REPOSITORY
+      registry:
+        type: string
+        required: false
+        default: registry.digitalocean.com
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+    container:
+      image: registry.digitalocean.com/setle/setlebe/setle-changelog:cb6caced18fc680aab2c91e5992abe5ba6683a25
+      credentials:
+        username: ${{ secrets.DIGITALOCEAN_REGISTRY_USER }}
+        password: ${{ secrets.DIGITALOCEAN_REGISTRY_PASSWORD }}
+    environment: ${{ inputs.environment }} # only add environment on first job of deployment to avoid asking for approval on every job
+    permissions:
+      deployments: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Notify Slack
+        run: |
+          java -jar /changelog.jar release \
+            --application=$GITHUB_REPOSITORY \
+            --environment=${{ inputs.environment }} \
+            --environment-next=${{ inputs.environment_next }} \
+            --release-persist=${{ inputs.persist }} \
+            --release-next-persist=${{ inputs.persist_next }} \
+            --github-token=${{ secrets.GITHUB_TOKEN }} \
+            --github-repository=$GITHUB_REPOSITORY \
+            --current-commit=$GITHUB_SHA \
+            --slack-token=${{ secrets.SLACK_TOKEN }} \
+            --slack-channel=poc-ci-cd
