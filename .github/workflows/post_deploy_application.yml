@@ -29,14 +29,13 @@ on:
 jobs:
   changelog:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     container:
       image: registry.digitalocean.com/setle/setlebe/setle-changelog:cb6caced18fc680aab2c91e5992abe5ba6683a25
       credentials:
         username: ${{ secrets.DIGITALOCEAN_REGISTRY_USER }}
         password: ${{ secrets.DIGITALOCEAN_REGISTRY_PASSWORD }}
-    environment: ${{ inputs.environment }} # only add environment on first job of deployment to avoid asking for approval on every job
-    permissions:
-      deployments: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
