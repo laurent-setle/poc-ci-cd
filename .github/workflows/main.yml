@@ -19,6 +19,16 @@ jobs:
       environment: development
     secrets: inherit
 
+  post-deploy-development:
+    name: Post-Deploy development
+    needs: deploy-development
+    uses: ./.github/workflows/post_deploy_application.yml
+    with:
+      environment: development
+      environment_next: staging
+      persist_next: true
+    secrets: inherit
+
   deploy-staging:
     name: Deploy staging
     needs: deploy-development
@@ -27,10 +37,30 @@ jobs:
       environment: staging
     secrets: inherit
 
+  post-deploy-staging:
+    name: Post-Deploy staging
+    needs: deploy-staging
+    uses: ./.github/workflows/post_deploy_application.yml
+    with:
+      environment: staging
+      environment_next: production
+      persist: true
+      persist_next: true
+    secrets: inherit
+
   deploy-production:
     name: Deploy production
     needs: deploy-staging
     uses: ./.github/workflows/deploy_application.yml
     with:
       environment: production
+    secrets: inherit
+
+  post-deploy-production:
+    name: Post-Deploy production
+    needs: deploy-production
+    uses: ./.github/workflows/post_deploy_application.yml
+    with:
+      environment: production
+      persist: true
     secrets: inherit
