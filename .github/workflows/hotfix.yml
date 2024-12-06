@@ -1,0 +1,29 @@
+name: Hotfix Workflow
+
+on:
+  push:
+    branches:
+    - hotfix/**
+
+jobs:
+  build-and-push-container:
+    name: Build application
+    uses: ./.github/workflows/build_application.yml
+    secrets: inherit
+
+  deploy-production:
+    name: Deploy production
+    needs: build-and-push-container
+    uses: ./.github/workflows/deploy_application.yml
+    with:
+      environment: production
+    secrets: inherit
+
+  post-deploy-production:
+    name: Post-Deploy production
+    needs: deploy-production
+    uses: ./.github/workflows/post_deploy_application.yml
+    with:
+      environment: production
+      persist: true
+    secrets: inherit

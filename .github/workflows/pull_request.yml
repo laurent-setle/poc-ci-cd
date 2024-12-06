@@ -7,11 +7,10 @@ on:
       - synchronize
       - edited
       - reopened # Trigger only on PR events
-    branches-ignore:
-      - 'hotfix/**'
 
 jobs:
   build-container:
+    if: "!startsWith(github.event.pull_request.head.ref, 'hotfix/')" # Exclude PRs from 'hotfix/' branches (handled in hotfix workflow)
     name: Build application
     uses: ./.github/workflows/build_application.yml
     secrets: inherit
