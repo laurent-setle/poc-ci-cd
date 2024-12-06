@@ -26,4 +26,5 @@ jobs:
     with:
       environment: production
       persist: true
+      clean_next: false
     secrets: inherit
