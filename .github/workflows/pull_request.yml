@@ -23,7 +23,7 @@ jobs:
     permissions:
       contents: read
     container:
-      image: registry.digitalocean.com/setle/setlebe/setle-changelog:eda836f2772660f9a308a09a74ec5c97673516d3
+      image: registry.digitalocean.com/setle/setlebe/setle-changelog:6012152156f337cab83716e648a06114b23a3c24
       credentials:
         username: ${{ secrets.DIGITALOCEAN_REGISTRY_USER }}
         password: ${{ secrets.DIGITALOCEAN_REGISTRY_PASSWORD }}
@@ -36,4 +36,4 @@ jobs:
             --application=$GITHUB_REPOSITORY \
             --github-token=${{ secrets.GITHUB_TOKEN }} \
             --github-repository=$GITHUB_REPOSITORY \
-            --github-pull-request=${{github.event.pull_request.number}}
+            --github-pull-request=${{ github.event.pull_request.number }}

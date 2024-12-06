@@ -26,5 +26,5 @@ jobs:
     with:
       environment: production
       persist: true
-      clean_next: false
+      pull_request: ${{ github.event.pull_request.number }}
     secrets: inherit

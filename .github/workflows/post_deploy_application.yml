@@ -17,10 +17,9 @@ on:
         type: boolean
         required: false
         default: false
-      clean_next:
-        type: boolean
+      pull_request:
+        type: string
         required: false
-        default: true
       image:
         type: string
         required: false
@@ -36,7 +35,7 @@ jobs:
     permissions:
       contents: write
     container:
-      image: registry.digitalocean.com/setle/setlebe/setle-changelog:eda836f2772660f9a308a09a74ec5c97673516d3
+      image: registry.digitalocean.com/setle/setlebe/setle-changelog:6012152156f337cab83716e648a06114b23a3c24
       credentials:
         username: ${{ secrets.DIGITALOCEAN_REGISTRY_USER }}
         password: ${{ secrets.DIGITALOCEAN_REGISTRY_PASSWORD }}
@@ -51,9 +50,9 @@ jobs:
             --environment-next=${{ inputs.environment_next }} \
             --release-persist=${{ inputs.persist }} \
             --release-next-persist=${{ inputs.persist_next }} \
-            --release-next-clean=${{ inputs.clean_next }} \
             --github-token=${{ secrets.GITHUB_TOKEN }} \
             --github-repository=$GITHUB_REPOSITORY \
+            --github-pull-request=${{ inputs.pull_request }} \
             --current-commit=$GITHUB_SHA \
             --slack-token=${{ secrets.SLACK_TOKEN }} \
             --slack-channel=poc-ci-cd
