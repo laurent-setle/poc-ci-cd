@@ -10,12 +10,11 @@ on:
 
 jobs:
   build-container:
-    if: "!startsWith(github.event.pull_request.head.ref, 'hotfix/')" # Exclude PRs from 'hotfix/' branches (handled in hotfix workflow)
     name: Build application
     uses: ./.github/workflows/build_application.yml
     secrets: inherit
     with:
-      push: false
+      push: ${{ startsWith(github.event.pull_request.head.ref, 'hotfix/') }}
 
   verify-changelog:
     name: Verify changelog
@@ -37,3 +36,23 @@ jobs:
             --github-token=${{ secrets.GITHUB_TOKEN }} \
             --github-repository=$GITHUB_REPOSITORY \
             --github-pull-request=${{ github.event.pull_request.number }}
+
+  deploy-production:
+    if: "startsWith(github.event.pull_request.head.ref, 'hotfix/')"
+    name: Deploy production
+    needs: build-container
+    uses: ./.github/workflows/deploy_application.yml
+    with:
+      environment: production
+    secrets: inherit
+
+  post-deploy-production:
+    if: "startsWith(github.event.pull_request.head.ref, 'hotfix/')"
+    name: Post-Deploy production
+    needs: deploy-production
+    uses: ./.github/workflows/post_deploy_application.yml
+    with:
+      environment: production
+      persist: true
+      pull_request: ${{ github.event.pull_request.number }}
+    secrets: inherit
