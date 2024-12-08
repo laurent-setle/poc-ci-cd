@@ -18,9 +18,8 @@ jobs:
       # for hotfix branches we don't use GITHUB_SHA which is the commit on the merge branch
       # or else we'd be adding all changes from the latest commit of the main branch to production too
       commit: ${{
-          startsWith(github.event.pull_request.head.ref, 'hotfix/')
-          ? github.event.pull_request.head.sha
-          : $GITHUB_SHA
+        github.event.pull_request.head.ref.startsWith('hotfix/')
+        && github.event.pull_request.head.sha || github.sha
         }}
 
   verify-changelog:
