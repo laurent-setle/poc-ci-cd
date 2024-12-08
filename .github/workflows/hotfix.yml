@@ -11,6 +11,13 @@ jobs:
     uses: ./.github/workflows/build_application.yml
     secrets: inherit
 
+  echo:
+    name: Echo
+    runs-on: ubuntu-latest
+    steps:
+      - name: logging
+        run: echo "<${{ github.event.pull_request.number }}>"
+
   deploy-production:
     name: Deploy production
     needs: build-and-push-container
