@@ -6,6 +6,10 @@ on:
       environment:
         type: string
         required: true
+      commit:
+        type: string
+        required: false
+        default: $GITHUB_SHA
       image:
         type: string
         required: false
@@ -22,14 +26,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.commit }}
 
       - name: Log in to Container Registry
         run: echo "${{ secrets.DIGITALOCEAN_REGISTRY_PASSWORD }}" | podman login -u "${{secrets.DIGITALOCEAN_REGISTRY_USER}}" --password-stdin ${{ inputs.registry }}
 
       - name: Tag Podman image
         run: |
-          podman pull ${{ inputs.registry }}/${{ inputs.image }}:$GITHUB_SHA
-          podman tag ${{ inputs.registry }}/${{ inputs.image }}:$GITHUB_SHA ${{ inputs.registry }}/${{ inputs.image }}:${{ inputs.environment }}
+          podman pull ${{ inputs.registry }}/${{ inputs.image }}:${{ inputs.commit }}
+          podman tag ${{ inputs.registry }}/${{ inputs.image }}:${{ inputs.commit }} ${{ inputs.registry }}/${{ inputs.image }}:${{ inputs.environment }}
 
       - name: Push Podman image
         run: podman push ${{ inputs.registry }}/${{ inputs.image }}:${{ inputs.environment }}

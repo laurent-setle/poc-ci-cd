@@ -15,6 +15,13 @@ jobs:
     secrets: inherit
     with:
       push: ${{ startsWith(github.event.pull_request.head.ref, 'hotfix/') }}
+      # for hotfix branches we don't use GITHUB_SHA which is the commit on the merge branch
+      # or else we'd be adding all changes from the latest commit of the main branch to production too
+      commit: ${{
+          startsWith(github.event.pull_request.head.ref, 'hotfix/')
+          ? github.event.pull_request.head.sha
+          : $GITHUB_SHA
+        }}
 
   verify-changelog:
     name: Verify changelog
@@ -44,6 +51,7 @@ jobs:
     uses: ./.github/workflows/deploy_application.yml
     with:
       environment: production
+      commit: ${{ github.event.pull_request.head.sha }}
     secrets: inherit
 
   post-deploy-production:
@@ -54,5 +62,6 @@ jobs:
     with:
       environment: production
       persist: true
+      commit: ${{ github.event.pull_request.head.sha }}
       pull_request: ${{ github.event.pull_request.number }}
     secrets: inherit

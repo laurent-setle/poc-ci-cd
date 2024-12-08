@@ -17,6 +17,10 @@ on:
         type: boolean
         required: false
         default: false
+      commit:
+        type: string
+        required: false
+        default: $GITHUB_SHA
       pull_request:
         type: string
         required: false
@@ -53,6 +57,6 @@ jobs:
             --github-token=${{ secrets.GITHUB_TOKEN }} \
             --github-repository=$GITHUB_REPOSITORY \
             --github-pull-request=${{ inputs.pull_request }} \
-            --current-commit=$GITHUB_SHA \
+            --current-commit=${{ inputs.commit }} \
             --slack-token=${{ secrets.SLACK_TOKEN }} \
             --slack-channel=poc-ci-cd
