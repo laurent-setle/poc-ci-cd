@@ -22,7 +22,7 @@ jobs:
     permissions:
       contents: read
     container:
-      image: registry.digitalocean.com/setle/setlebe/setle-changelog:6012152156f337cab83716e648a06114b23a3c24
+      image: registry.digitalocean.com/setle/setlebe/setle-changelog:608c196be7402dd9d253d625b7c6c2237bffb566
       credentials:
         username: ${{ secrets.DIGITALOCEAN_REGISTRY_USER }}
         password: ${{ secrets.DIGITALOCEAN_REGISTRY_PASSWORD }}
