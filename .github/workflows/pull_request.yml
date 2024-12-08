@@ -7,8 +7,6 @@ on:
       - synchronize
       - edited
       - reopened # Trigger only on PR events
-    branches-ignore:
-      - 'hotfix/**'
 
 jobs:
   build-container:
@@ -16,7 +14,7 @@ jobs:
     uses: ./.github/workflows/build_application.yml
     secrets: inherit
     with:
-      push: false
+      push: ${{ startsWith(github.event.pull_request.head.ref, 'hotfix/') }}
 
   verify-changelog:
     name: Verify changelog
@@ -24,7 +22,7 @@ jobs:
     permissions:
       contents: read
     container:
-      image: registry.digitalocean.com/setle/setlebe/setle-changelog:73ffbc25cbdb6686e8570a180a24f1efa270c8ba
+      image: registry.digitalocean.com/setle/setlebe/setle-changelog:6012152156f337cab83716e648a06114b23a3c24
       credentials:
         username: ${{ secrets.DIGITALOCEAN_REGISTRY_USER }}
         password: ${{ secrets.DIGITALOCEAN_REGISTRY_PASSWORD }}
@@ -37,4 +35,24 @@ jobs:
             --application=$GITHUB_REPOSITORY \
             --github-token=${{ secrets.GITHUB_TOKEN }} \
             --github-repository=$GITHUB_REPOSITORY \
-            --github-pull-request=${{github.event.pull_request.number}}
+            --github-pull-request=${{ github.event.pull_request.number }}
+
+  deploy-production:
+    if: "startsWith(github.event.pull_request.head.ref, 'hotfix/')"
+    name: Deploy production
+    needs: build-container
+    uses: ./.github/workflows/deploy_application.yml
+    with:
+      environment: production
+    secrets: inherit
+
+  post-deploy-production:
+    if: "startsWith(github.event.pull_request.head.ref, 'hotfix/')"
+    name: Post-Deploy production
+    needs: deploy-production
+    uses: ./.github/workflows/post_deploy_application.yml
+    with:
+      environment: production
+      persist: true
+      pull_request: ${{ github.event.pull_request.number }}
+    secrets: inherit
