@@ -43,7 +43,7 @@ jobs:
   deploy-production:
     if: "startsWith(github.event.pull_request.head.ref, 'hotfix/')"
     name: Deploy production
-    needs: build-container
+    needs: [verify-changelog, build-container]
     uses: ./.github/workflows/deploy_application.yml
     with:
       environment: production

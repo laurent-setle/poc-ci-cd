@@ -10,6 +10,8 @@ jobs:
     name: Build application
     uses: ./.github/workflows/build_application.yml
     secrets: inherit
+    with:
+      commit: ${{ github.sha }}
 
   deploy-development:
     name: Deploy development
@@ -17,6 +19,7 @@ jobs:
     uses: ./.github/workflows/deploy_application.yml
     with:
       environment: development
+      commit: ${{ github.sha }}
     secrets: inherit
 
   post-deploy-development:
@@ -27,6 +30,7 @@ jobs:
       environment: development
       environment_next: staging
       persist_next: true
+      commit: ${{ github.sha }}
     secrets: inherit
 
   deploy-staging:
@@ -35,6 +39,7 @@ jobs:
     uses: ./.github/workflows/deploy_application.yml
     with:
       environment: staging
+      commit: ${{ github.sha }}
     secrets: inherit
 
   post-deploy-staging:
@@ -46,6 +51,7 @@ jobs:
       environment_next: production
       persist: true
       persist_next: true
+      commit: ${{ github.sha }}
     secrets: inherit
 
   deploy-production:
@@ -54,6 +60,7 @@ jobs:
     uses: ./.github/workflows/deploy_application.yml
     with:
       environment: production
+      commit: ${{ github.sha }}
     secrets: inherit
 
   post-deploy-production:
@@ -63,4 +70,5 @@ jobs:
     with:
       environment: production
       persist: true
+      commit: ${{ github.sha }}
     secrets: inherit
