@@ -7,6 +7,10 @@ on:
         type: string
         required: false
         default: setle/$GITHUB_REPOSITORY
+      commit:
+        type: string
+        required: false
+        default: $GITHUB_SHA
       registry:
         type: string
         required: false
@@ -23,6 +27,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.commit }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -59,6 +65,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.commit }}
 
       - name: Download a single artifact
         uses: actions/download-artifact@v4
@@ -71,9 +79,9 @@ jobs:
 
       # Build the Podman image
       - name: Build Podman image
-        run: podman build -t ${{ inputs.registry }}/${{ inputs.image }}:$GITHUB_SHA .
+        run: podman build -t ${{ inputs.registry }}/${{ inputs.image }}:${{ inputs.commit }} .
 
       # Push the Podman image
       - name: Push Podman image
         if: inputs.push
-        run: podman push ${{ inputs.registry }}/${{ inputs.image }}:$GITHUB_SHA
+        run: podman push ${{ inputs.registry }}/${{ inputs.image }}:${{ inputs.commit }}

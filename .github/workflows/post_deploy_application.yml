@@ -17,6 +17,10 @@ on:
         type: boolean
         required: false
         default: false
+      commit:
+        type: string
+        required: false
+        default: $GITHUB_SHA
       pull_request:
         type: string
         required: false
@@ -35,7 +39,7 @@ jobs:
     permissions:
       contents: write
     container:
-      image: registry.digitalocean.com/setle/setlebe/setle-changelog:6012152156f337cab83716e648a06114b23a3c24
+      image: registry.digitalocean.com/setle/setlebe/setle-changelog:608c196be7402dd9d253d625b7c6c2237bffb566
       credentials:
         username: ${{ secrets.DIGITALOCEAN_REGISTRY_USER }}
         password: ${{ secrets.DIGITALOCEAN_REGISTRY_PASSWORD }}
@@ -53,6 +57,6 @@ jobs:
             --github-token=${{ secrets.GITHUB_TOKEN }} \
             --github-repository=$GITHUB_REPOSITORY \
             --github-pull-request=${{ inputs.pull_request }} \
-            --current-commit=$GITHUB_SHA \
+            --current-commit=${{ inputs.commit }} \
             --slack-token=${{ secrets.SLACK_TOKEN }} \
             --slack-channel=poc-ci-cd
