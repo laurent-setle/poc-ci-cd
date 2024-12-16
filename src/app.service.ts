@@ -7,6 +7,6 @@ export class AppService {
 
   getHello(): string {
     const environment = this.configService.get<string>('ENV', 'development');
-    return `Hello World in ${environment}! Test 1`;
+    return `Hello World in ${environment}!`;
   }
 }
